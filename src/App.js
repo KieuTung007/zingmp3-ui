@@ -1,25 +1,39 @@
-import logo from './logo.svg';
-import './App.css';
+import { useEffect } from 'react';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { publicRoutes } from '~/routes';
+import MainLayout from './layouts/MainLayout';
+import store from './redux/store';
+import { Provider } from 'react-redux';
 
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+    useEffect(() => {
+        document.title = 'Zing MP3 Clone';
+    });
+    return (
+        <Provider store={store}>
+            <Router>
+                <div className="App">
+                    <Routes>
+                        {publicRoutes.map((publicRoute, index) => {
+                            const Layout = publicRoute.layout || MainLayout;
+                            const Page = publicRoute.component;
+                            return (
+                                <Route
+                                    key={index}
+                                    path={publicRoute.path}
+                                    element={
+                                        <Layout>
+                                            <Page />
+                                        </Layout>
+                                    }
+                                />
+                            );
+                        })}
+                    </Routes>
+                </div>
+            </Router>
+        </Provider>
+    );
 }
 
 export default App;
